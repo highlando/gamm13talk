@@ -1,0 +1,338 @@
+\documentclass{beamer}
+\usepackage{beamerthemeshadow}
+%\usepackage{natbib}
+\usepackage{amssymb,amsmath,amsthm,mathtools,amscd}
+%\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+\useinnertheme{rounded}
+\usecolortheme{beetle}
+\setbeamercolor{normal text}{bg=white!20} 
+\setbeamercolor{title}{bg=blue!10!gray}
+\setbeamercolor{block title}{fg=black,bg=blue!10!gray!50!}
+
+\setbeamercolor{section in toc}{fg=black}
+%\logo{\includegraphics[height=0.8cm]{TU-LogoSchrift2line.jpg}} 
+\setbeamercolor{logo}{bg=white}
+\setbeamercolor{itemize item}{fg=gray}
+
+\DeclareMathOperator{\re}{Re}
+
+\newenvironment{recap}{\begin{small}\color{gray}\begin{flushright}}{\end{flushright}\end{small}}
+\input{mathComAbb}
+
+
+\begin{document}
+%%% Spaces
+\def\Hdf{H_{{df}}}
+\def\sdf{_{df}}
+\def\Hg{H_{{g}}}
+\def\sg{_{g}}
+
+%%% Projectors
+\def\PHdf{\mathcal P_{\Hdf}}
+\def\PHpdf{\mathcal P_{\Hdf'}}
+
+\title[Decoupling of semi-explicit index-2 DAEs]{ Decoupling of Semi-Explicit Index-2 (A)DAEs  \\ via Projector Chains}
+
+
+\author{Jan Heiland}
+\institute{ Absolventen-Seminar Numerische Mathematik }
+\date{\today} 
+
+\titlegraphic{\includegraphics[scale=0.009]{TUBerlin_Logo_rot.jpg} }
+
+\frame{\titlepage} 
+
+\frame{
+\vfill
+\tableofcontents
+} 
+
+\section{Finite Dim DAEs}
+\subsection{No Introduction}
+
+\frame{
+\frametitle{Finite-dimensional NSEs}
+Differential-algebraic equation (DAE) for $v\in \mathcal C^1(0,T;\mathbb R^{n_v})$ and $p\in \mathcal C(0,T;\mathbb R^{n_v})$ 
+\begin{equation*}
+	\bbmat M & 0 \\ 0 & 0 \ebmat\bbmat \dot v \\ \dot p \ebmat-\bbmat A(v) & J_1^T \\ J_2 & 0 \ebmat\bbmat v \\ p \ebmat=\bbmat f \\ g \ebmat
+\end{equation*}
+ in  $\mathcal C^1(0,T;\mathbb R^{n_v}) \times \mathcal C(0,T;\mathbb R^{n_v}).$
+\vfill
+Crucial:
+\begin{itemize}
+	\item $M$, $J_2M^{-1}J_1^T$ invertible ($\Rightarrow n_p \leq n_v$)
+\end{itemize}
+For simplification:
+\begin{itemize}
+	\item $M$, $J_1$, $J_2$ are time-invariant
+\end{itemize}
+}
+
+\frame{
+\frametitle{Projector Chain}
+\begin{itemize}
+	\item Start from the DAE $(E_0,A_0)$, ie. $E_0\dot x - A_0x = f$
+\end{itemize}
+Given $(E_k,A_k)$\dots
+\begin{enumerate}
+	\item \texttt{If} $E_k$ is invertible, \texttt{Return}
+	\item \texttt{Elseif}:
+		\begin{itemize}
+			\item Compute projector $Q _k$, with $\image Q_k = \ker E_k$
+			\item Define $P_k:= I - Q_k$
+			\item Set $(E_{k+1}, A_{k+1}):= (E_k+A_kQ_k,A_kP_k)$
+			\item Dump $k$ and start over
+		\end{itemize}
+\end{enumerate}
+The exiting $k$ defines the tractability index of the DAE
+}
+\subsection{Semidiscrete Navier-Stokes}
+\frame{
+\frametitle{A Concrete Example}
+\begin{recap}
+	$\bbmat M & 0 \\ 0 & 0 \ebmat\bbmat \dot v \\ \dot p \ebmat-\bbmat A(v) & J_1^T \\ J_2 & 0 \ebmat\bbmat v \\ p \ebmat=\bbmat f \\ g \ebmat$ \\
+	as $\mathcal E_0\dot x - \mathcal A_0x = [fg] $
+\end{recap}
+For the NSE system we find that $\mathcal E_2$ is invertible with
+\begin{equation*}
+	\mathcal E_2^{-1} = \begin{bmatrix} \mathcal P & [I-\mathcal PM^{-1}A]M^{-1}J_1^TS^{-1} \\ {\mathcal Q}^- & -[I+{\mathcal Q}^-M^{-1}AM^{-1}J_1^T]S^{-1} \end{bmatrix}
+\end{equation*}
+with $S=J_2M^{-1}J_1^T$, the projectors 
+\begin{itemize}
+	\item[] ${\mathcal Q}=M^{-1}J_1^TS^{-1}J_2$ and 
+	\item[] $\mathcal P = I - \mathcal Q$,
+\end{itemize} 
+and for any $A=A(v)$.
+}
+
+\frame{
+\frametitle{and Application}
+We scale the NSE system by $\mathcal E_2^{-1}$, write $v=\mathcal Pv + \mathcal Qv$, and end up with the decoupling
+\begin{align*}
+	\mathcal Q v &= - M^{-1}J_1^TS^{-1}g \\
+	\frac{d}{dt}(\mathcal P v) - \mathcal PM^{-1}A(\mathcal Pv+\mathcal Qv)[\mathcal Pv+\mathcal Qv] &= \mathcal PM^{-1}f, \\
+	p &= \mathcal F(\mathcal Pv,\mathcal Q_v,\dot g).
+\end{align*}
+Note that $\mathcal  P = I - M^{-1}J_1^TS^{-1}J_2$ projects onto the kernel of $J_2$.
+\vfill
+
+This decoupling works, since $\mathcal P$ and $\mathcal Q$ split the solution space as well as the ``equation space''.
+}
+
+\section{Abstract DAEs}
+\subsection{General Considerations}
+\frame{
+\frametitle{The Main Result}
+A similar result for abstract DAEs, where $v$ and $p$ take on values in Banach-spaces, that will
+\begin{itemize}
+	\item Decouple algebraic an differential equations,
+	\item Characterise the solution sets, 
+	\item Reveal consistency and smoothness conditions (not today),
+	\item and that is consistent with finite-dimensional solution approaches.
+\end{itemize}
+}
+
+\frame{
+\frametitle{Functional Analysis Setting}
+\begin{itemize}
+	\item Banach space $V \subset H$ Hilbert space (dense and continuously embedded)
+	\item Riesz isomorphism $j'\colon H \to H'$ identifies $H$ with its dual $H'$
+	\item Then, $V\subset H \cong H' \subset V'$
+\end{itemize}
+\vfill
+ We look for $v\in \bigl( (0,T) \to V \bigr)$ with $\dot v(t) \in V'$ and for $p \in \bigl( (0,T) \to Q \bigr)$ that satisfy
+	\begin{align*}
+		\dot v(t) -A(v(t))-J_1'p(t)&=f(t) \quad\text{ in }V'\text{, a.e. in }(0,T), \\
+		-J_2v(t)\phantom{-J_1'p(t)}&=g(t) \quad\text{ in }Q'\text{, a.e. in }(0,T).
+	\end{align*}
+with $V\subset H \subset V'$ as defined above, and with a Hilbert space $Q$.
+}
+\frame{
+\frametitle{Abstract ADAE}
+	\begin{recap}
+		$v(t)\in V$, $\dot v(t) \in V'$, $p(t)\in Q$, \\
+		$\dot v(t) -A(v(t))-J_1'p(t)=f(t) \quad\text{ in }V'$ \\
+		$-J_2v(t)\phantom{-J_1'p(t)}=g(t) \quad\text{ in }Q'$
+	\end{recap}
+With operators 
+\begin{itemize}
+	\item $A\colon V\to V'$
+	\item $J_1':Q \to V'$
+	\item $J_2 :V \to Q'$
+\end{itemize}
+\vfill
+Major obstacle for decoupling: \\
+The equations are posed in a Banach space $V' \supsetneq V$
+\begin{itemize}
+	\item[$\to$] A projection does not necessarily split the space  
+	\item[$\to$] Solution space is different from ``equation space''
+\end{itemize}
+\vfill
+}
+
+\frame{
+\frametitle{Strategy}
+We proceed as follows:
+\begin{itemize}
+	\item Given a smooth $f$ and smoothing operators,
+	\item the equation is posed in $H'$ -- rather than in $V'$ --
+	\item which is a Hilbert space.
+	\item There we can define projectors and decouple the equations.
+	\item $v\in V \subset H$ can be decoupled with the dual projections.
+\end{itemize}
+}
+
+\frame{
+\frametitle{(Well posedness) Assumption}
+\begin{recap}
+	$\dot v(t) -A(v(t))-J_1'p(t)=f(t) \quad\text{ in }V'$ \\
+	$-J_2v(t)\phantom{-J_1'p(t)}=g(t) \quad\text{ in }Q'$
+\end{recap}
+\begin{block}{Assumption [WP]}
+	\begin{itemize}
+		\item[(a)] $J_1',J_2'\in \mathcal L(Q,H')$ are homeomorphisms onto their range and 
+		\item[(b)] $j(\image J_1') \cap \ker J_2=\{0\}$,
+	\end{itemize}
+	where $j\colon H'\to H$ is the Riesz isomorphism.
+\end{block}
+
+\begin{lemma}
+	If $J_1=J_2=:J$, then Assumption [WP] is equivalent to the commonly used condition
+		\begin{equation*}
+			\exists \gamma >0: \inf_{0\neq v\in H} \sup_{0\neq q \in Q} \frac{\langle J'q,v \rangle _{H',H}}{\norm{q}_Q\norm{v}_H}\geq \gamma > 0,
+		\end{equation*}
+\end{lemma}
+}
+
+\frame{
+\frametitle{(Smoothness) Assumption}
+\begin{recap}
+	$\dot v(t) -A(v(t))-J_1'p(t)=f(t) \quad\text{ in }V'$ \\
+	$-J_2v(t)\phantom{-J_1'p(t)}=g(t) \quad\text{ in }Q'$
+\end{recap}
+
+\begin{block}{Assumption [S]}
+	For more regular data $f(t)\in H'$ (rather than in $V'$) any corresponding solution $(v,p)$ of the abstract DAE invokes $A(v(t))\in H'$.
+\end{block}
+
+\vfill
+
+\begin{corollary}
+With $J_1'\colon Q \to H'$, Assumption [S] means that for smoother $f$ the $ADAE$ is posed in the Hilbert space $H'\times Q'$
+\end{corollary}
+}
+
+
+\frame{
+\frametitle{Split the Spaces}
+	By Assumption we have $S:=J_2jJ_1' \colon Q \to Q'$ is invertible, and we can define $L:=J_1'S^{-1}J_2\colon H \to H'$.
+\begin{lemma}
+\begin{itemize}
+		\item $\Hdf:= \ker J_2=\image [I_{H}-jL]$,
+		\item $\Hg:= \image jL = \image jJ_1'$,
+		\item[and] thus $H=\Hdf\oplus \Hg$,
+		\item $\Hg':= \image Lj = j'(\Hg)$,
+		\item $\Hdf':= \image [I_{H'}-Lj]=j'(\Hdf)$,
+		\item[and] thus $H'=\Hdf'\oplus \Hg'$.
+\end{itemize}
+\end{lemma}
+Define $\PHpdf$, $\PHdf$ -- corresponding projectors onto $\Hdf'$ and $\Hdf$.
+}
+
+\frame{
+\frametitle{Decouple the Equations}
+\begin{recap}
+	For smooth $f$ we have \\
+	$\dot v(t) -A(v(t))-J_1'p(t)=f(t) \quad\text{ in }H'$ \\
+	$-J_2v(t)\phantom{-J_1'p(t)}=g(t) \quad\text{ in }Q'$
+\end{recap}
+And, having scaled the ADAE by the injective 
+ \begin{equation*}
+	 \mathcal E_2^{-1}:=\bbmat \PHpdf  & J_1'S^{-1} \\ j_Q'S^{-1}J_2j & -j_Q'S^{-1} \ebmat\colon H'\times Q' \to H'\times Q' . 
+ \end{equation*}
+(from the projector chain), we get the equivalent system of equation
+$$ \PHpdf \dot v  - \PHpdf A(v)-Lv  = \PHpdf f + J_1S^{-1}g \text{ in }H'.$$
+plus an equation defining the algebraic variable $p$.
+}
+
+\frame{
+\frametitle{Split the Equations}
+\begin{recap}
+$ \PHpdf \dot v  - \PHpdf A(v)-Lv  = \PHpdf f + J_1'S^{-1}g \text{ in }H'$
+\end{recap}
+Using $H'=\Hdf'\oplus \Hg'$ and $v= \PHdf v+jLv $ we find
+that
+\begin{equation*}
+	Lv = [I-\PHdf]v = -J_1S^{-1}g \text{ in }H_g'
+\end{equation*}
+while $\PHdf v$ must solve 
+\begin{equation*}
+	\dot w  - \PHpdf A(w -jJ_1S^{-1}g)  = \PHpdf f  \text{ in }\Hdf'.
+\end{equation*}
+}
+
+\frame{
+\frametitle{Summing Up}
+\begin{theorem}
+	Under Assumptions [WP] and [S], for $f$ and $g$ sufficiently smooth,
+	any $v$ with values in $V$ solving the ADAE
+	\begin{align*}
+		\dot v(t) -A(v(t))-J_1'p(t)&=f(t) \quad\text{ in }V', \\
+		-J_2v(t)\phantom{-J_1'p(t)}&=g(t) \quad\text{ in }Q',
+	\end{align*}
+	 a.e. in $(0,T)$, can be written as $v=\PHdf v + jLv$, where the parts solve 
+\begin{align*}
+	Lv(t) = -J_1S^{-1}g(t) &\text{ in }H_g'\\
+	\dot \PHdf v(t)  - \PHpdf A\bigl(\PHdf v(t) -jJ_1S^{-1}g(t)\bigr)  = \PHpdf f(t) & \text{ in }\Hdf'.
+\end{align*}
+
+\end{theorem}
+}
+
+\subsection{Navier-Stokes Case}
+\frame{
+\frametitle{NSE vs. the Assumptions }
+\begin{recap}
+	$\dot v(t) -A(v(t))-J_1'p(t)=f(t) \quad\text{ in }V'$ \\
+	$-J_2v(t)\phantom{-J_1'p(t)}=g(t) \quad\text{ in }Q'$
+\end{recap}
+\begin{block}{Assumption [WP]}
+	\begin{itemize}
+		\item[(a)] $J_1',J_2'\in \mathcal L(Q,H')$ are homeomorphisms onto their range and 
+		\item[(b)] $j(\image J_1') \cap \ker J_2=\{0\}$,
+	\end{itemize}
+	where $j\colon H'\to H$ is the Riesz isomorphism.
+\end{block}
+
+\begin{block}{Assumption [S]}
+	For more regular data $f(t)\in H'$ (rather than in $V'$) any corresponding solution $(v,p)$ of the abstract DAE invokes $A(v(t))\in H'$.
+\end{block}
+
+}
+
+
+
+\frame{
+\frametitle{What Else?}
+Further issues:
+\begin{itemize}
+	\item Regularity of $\bigl( t \mapsto v(t),p(t) \bigr)$
+	\item Initial conditions and consistency
+	\item Spatial discretizations
+	\item Optimal control problems
+\end{itemize}
+}
+
+\frame{
+\begin{center}
+Thanks to Volker Mehrmann and \\
+\vspace{0.1in}
+\textbf{thank you for your attention.}\\
+\vspace{0.2in}
+For suggestions and questions please contact me\\
+\vspace{0.1in}
+\texttt{heiland@math.tu-berlin.de}
+\end{center}
+}
+\end{document}
