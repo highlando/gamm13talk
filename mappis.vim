@@ -5,10 +5,10 @@
 :imap dp \bigl \langle x \bigr \rangle _{<++> <esc>Fxs
 :imap scp \bigl(x \bigr)_{<++> <esc>Fxs
 :imap iot \int_0^T
-:imap xs x^* 
-:imap x0 x_0 
-:imap l1 \lambda_1
-:imap l2 \lambda_2
+:imap vs v^* 
+:imap us u^* 
+:imap lv \lambda_v
+:imap lp \lambda_p
 :imap bl1 \bar \lambda_1
 imap == &=
 imap sv \bbmat v \\ p \ebmat
@@ -19,9 +19,6 @@ imap MM \bbmat M & 0 \\ 0 & 0 \ebmat
 imap AM \bbmat A(v) & J_1^T \\ J_2 & 0 \ebmat
 imap j2 J_2
 imap j1 J_1
-"imap lv \lambda_v
-imap lp L^p(\Omega) 
-"imap ms \mathscr 
 imap mc \mathcal 
 imap vb v_\bot 
 imap vo v_0 
@@ -30,4 +27,4 @@ iunmap ,u
 imap kk ^k 
 imap k1 _{k+1} 
 imap qt \quad \text{x}<++> <esc>Fxs
-imap ,ino \int_\Omega x \inva \omega <++> <esc>Fxs 
+imap ,inT \int_0^T x \inva t <++> <esc>Fxs 
