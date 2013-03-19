@@ -50,7 +50,7 @@ Decoupling and Optimal Control \\ of Semi-explicit Semi-linear PDAEs of Index 2
 \tableofcontents
 } 
 
-\section{Optimal Control of ADAEs}
+\section{Optimal Control of Abstract DAEs}
 \subsection{Problem Setting}
 
 \frame{
@@ -93,14 +93,14 @@ In the neighborhood of an optimal pair $(v^* ,u^* )$, let
 \begin{itemize}
 	\item[a.)] the involved operators be two times Fr\'echet differentiable,
 	\item[b.)] the linearized (ADAE) have a unique solution for any $u$,
-	\item[c.)] the (adDAE) have a solution,
+	\item[c.)] the (adADAE) have a solution,
 	\item[d.)] there be a constant $c$ such that 
 $$-\langle h_v,\lambda_v A'_{;vv}(v^*)h_v \rangle + \mathcal J_{;(v,u)^2}(v^*,u^*)[h_v,h_u]^2 \geq c \norm{h_u}^2$$
 		for all $(h_v,h_u)$ that solve the linearized (ADAE).
 \end{itemize}
 \end{block}
 \begin{theorem}
-	If Assumption 1 holds, then the optimal control problem has a locally unique solution. This solution can be approached by Newton's method for the nonlinear optimality system. 
+	If Assumption 1 holds, then $(v^*,u^*)$ is a locally unique solution to the optimal control problem. This solution can be approached by Newton's method for the nonlinear optimality system. 
 \end{theorem}
 }
 
@@ -202,8 +202,8 @@ We proceed as follows:
 	\end{align*}
 	 a.e. in $(0,T)$, can be written as $v=v\sdf + v\sg$, where 
 \begin{align*}
-	Lv(t) = -J_1S^{-1}g(t) &\text{ in }H_g'\\
-	\dot \PHdf v(t)  - \PHpdf A\bigl(v\sdf(t) -jJ_1S^{-1}g(t)\bigr)  = \PHpdf f(t) & \text{ in }\Hdf'.
+	j'v\sg(t) = -J_1'S^{-1}g(t) &\text{ in }H_g'\\
+	\dot v\sdf (t)  - \PHpdf A\bigl(v\sdf(t) -jJ_1S^{-1}g(t)\bigr)  = \PHpdf f(t) & \text{ in }\Hdf'.
 \end{align*}
 
 \end{theorem}
